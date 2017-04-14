@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    int[] imgIds = new int[]{R.mipmap.banner2, R.mipmap.banner3, R.mipmap.banner4};
+    int[] imgIds = new int[]{R.mipmap.banner2};
 
     List<Bitmap> mBitmapList = new ArrayList<>();
 

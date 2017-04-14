@@ -3,8 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ViewPagerImageViewDemo.iml" filepath="$PROJECT_DIR$/ViewPagerImageViewDemo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/autorotationdemo/autorotationdemo.iml" filepath="$PROJECT_DIR$/autorotationdemo/autorotationdemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/guideviewpagerdemo/guideviewpagerdemo.iml" filepath="$PROJECT_DIR$/guideviewpagerdemo/guideviewpagerdemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nestedviewpager/nestedviewpager.iml" filepath="$PROJECT_DIR$/nestedviewpager/nestedviewpager.iml" />
     </modules>
   </component>
 </project>

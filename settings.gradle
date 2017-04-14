@@ -1,1 +1,1 @@
-include ':app', ':autorotationdemo'
+include ':guideviewpagerdemo', ':autorotationdemo', ':nestedviewpager'

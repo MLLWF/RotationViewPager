@@ -41,6 +41,8 @@ public class AutoRotationView extends FrameLayout implements ViewPager.OnPageCha
     // TODO: 2017/4/12  界面样式参数
     private int pointLeftMargin = 20;
 
+    private boolean isOnlyOne = false;
+
 
     public AutoRotationView(Context context) {
         super(context);
@@ -82,7 +84,11 @@ public class AutoRotationView extends FrameLayout implements ViewPager.OnPageCha
             }
             mAdapter.notifyDataSetChanged();
             mPager.setCurrentItem(bitmaps.size() + 10000);
-            startRoll();
+            if (bitmaps.size() > 1) {
+                startRoll();
+            } else {
+                isOnlyOne = true;
+            }
         }
     }
 
@@ -212,12 +218,16 @@ public class AutoRotationView extends FrameLayout implements ViewPager.OnPageCha
 
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
-                            mAutoRunable.stop();
+                            if (!isOnlyOne) {
+                                mAutoRunable.stop();
+                            }
                             downX = (int) v.getX();
                             downTime = System.currentTimeMillis();
                             break;
                         case MotionEvent.ACTION_UP:
-                            mAutoRunable.start();
+                            if (!isOnlyOne) {
+                                mAutoRunable.start();
+                            }
                             int moveX = (int) v.getX();
                             long moveTime = System.currentTimeMillis() - downTime;
                             if (downX == moveX && moveTime < 500) {
@@ -225,9 +235,10 @@ public class AutoRotationView extends FrameLayout implements ViewPager.OnPageCha
                             }
                             break;
                         case MotionEvent.ACTION_CANCEL:
-                            mAutoRunable.start();
+                            if (!isOnlyOne) {
+                                mAutoRunable.start();
+                            }
                             break;
-
                         default:
                             break;
                     }
