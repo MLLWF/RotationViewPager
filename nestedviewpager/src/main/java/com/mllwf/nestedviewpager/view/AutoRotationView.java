@@ -1,4 +1,4 @@
-package com.mllwf.autorotationdemo;
+package com.mllwf.nestedviewpager.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.xutil.LogUtil.L;
+import com.mllwf.nestedviewpager.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,6 @@ public class AutoRotationView extends FrameLayout implements ViewPager.OnPageCha
         mAdapter = new AutoAdapter();
         mPager.setAdapter(mAdapter);
         mPager.addOnPageChangeListener(this);
-        L.e("初始化控件和线程");
     }
 
     public AutoRotationView(Context context, AttributeSet attrs) {
@@ -273,6 +273,22 @@ public class AutoRotationView extends FrameLayout implements ViewPager.OnPageCha
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        L.e("销毁视图");
         stopRoll();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        L.e("重建视图");
+        startRoll();
+    }
+
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        super.onWindowVisibilityChanged(visibility);
+        if (VISIBLE == this.getVisibility()) {
+            startRoll();
+        }
     }
 }

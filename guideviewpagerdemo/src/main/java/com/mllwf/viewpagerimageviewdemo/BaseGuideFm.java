@@ -48,6 +48,11 @@ public abstract class BaseGuideFm extends Fragment {
         initView();
         setBitmapDatas();
         initimgGroup(mBitmapList);
+        initApapter();
+        return rootView;
+    }
+
+    private void initApapter() {
         mAdapter = new GuideAdapter(imgViews);
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -94,7 +99,6 @@ public abstract class BaseGuideFm extends Fragment {
                 }
             }
         });
-        return rootView;
     }
 
     private void initView() {

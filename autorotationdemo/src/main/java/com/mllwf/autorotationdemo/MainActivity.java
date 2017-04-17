@@ -4,14 +4,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import com.example.xutil.ConvertUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    int[] imgIds = new int[]{R.mipmap.banner2};
+    int[] imgIds = new int[]{R.mipmap.banner1,R.mipmap.banner2,R.mipmap.banner3,R.mipmap.banner4};
 
     List<Bitmap> mBitmapList = new ArrayList<>();
 
@@ -31,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, position + "", Toast.LENGTH_SHORT).show();
             }
         });
-        setContentView(view);
-
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ConvertUtils.dip2px(MainActivity.this, 450));
+        setContentView(view,params);
     }
 }

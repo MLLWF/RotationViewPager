@@ -18,11 +18,11 @@ public class NoSlideViewPager extends ViewPager {
         super(context, attrs);
     }
 
+    //表示事件是否拦截，返回false表示不拦截
     @Override
-    public boolean onTrackballEvent(MotionEvent event) {
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
         return false;
     }
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         return false;

@@ -1,11 +1,9 @@
-package com.mllwf.autorotationdemo;
+package com.mllwf.nestedviewpager.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,58 +11,45 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.example.xutil.LogUtil.L;
+import com.mllwf.nestedviewpager.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by ML on 2017/4/12.
+ * Created by ML on 2017/4/17.
  */
 
-public class AutoRotationView extends FrameLayout implements ViewPager.OnPageChangeListener {
+public class NomalRotationView extends FrameLayout implements ViewPager.OnPageChangeListener {
 
-    private final int DELAY_MILI = 3000;
     // TODO: 2017/4/12  界面样式参数
     private int pointLeftMargin = 20;
 
     private Context mContext;
     private ViewPager mPager;
     private LinearLayout mPointLayout;
-    private AutoAdapter mAdapter;
-
-    private Handler mHandler;
-    private RotationRunnable mAutoRunable;
 
     private List<Bitmap> mBitmaps = new ArrayList<>();
     private List<ImageView> mImageViews = new ArrayList<>();
     private List<ImageView> mPoints = new ArrayList<>();
     private boolean isOnlyOne = false;
+    private NomalAdapter mAdapter;
 
-    public AutoRotationView(Context context) {
+
+    public NomalRotationView(Context context) {
         super(context);
         mContext = context;
         View.inflate(mContext, R.layout.fragment_guide_view, this);
         initView();
+
     }
 
     private void initView() {
         mPager = (ViewPager) findViewById(R.id.vp_guide);
         mPointLayout = (LinearLayout) findViewById(R.id.ll_point);
-        mHandler = new Handler();
-        mAutoRunable = new RotationRunnable();
-        mAdapter = new AutoAdapter();
+        mAdapter = new NomalAdapter();
         mPager.setAdapter(mAdapter);
         mPager.addOnPageChangeListener(this);
-        L.e("初始化控件和线程");
-    }
-
-    public AutoRotationView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public AutoRotationView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
     }
 
     public void setImageViewsData(List<Bitmap> bitmaps) {
@@ -80,12 +65,7 @@ public class AutoRotationView extends FrameLayout implements ViewPager.OnPageCha
                 }
             }
             mAdapter.notifyDataSetChanged();
-            mPager.setCurrentItem(bitmaps.size() + 10000);
-            if (bitmaps.size() > 1) {
-                startRoll();
-            } else {
-                isOnlyOne = true;
-            }
+            mPager.setCurrentItem(0);
         }
     }
 
@@ -100,93 +80,39 @@ public class AutoRotationView extends FrameLayout implements ViewPager.OnPageCha
         mPoints.add(point);
     }
 
-    public void startRoll() {
-        mAutoRunable.start();
+    private HeaderViewClickListener mHeaderViewClickListener;
+
+    public void setHeaderViewClickListener(HeaderViewClickListener headerViewClickListener) {
+        this.mHeaderViewClickListener = headerViewClickListener;
     }
 
-    public void stopRoll() {
-        mAutoRunable.stop();
+    public interface HeaderViewClickListener {
+        void HeaderViewClick(int position);
     }
 
-
-    /**
-     * @param position             滑动页面的位置
-     * @param positionOffset       滑动的百分比
-     * @param positionOffsetPixels 滑动的像素
-     */
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
     }
 
-    private int prePosition = 0;
-
-    /**
-     * @param position 滑动结束之后选中的页面位置
-     */
     @Override
     public void onPageSelected(int position) {
-        L.e("onPageSelected->position  :" + position);
-        mPoints.get(prePosition).setSelected(false);
-        mPoints.get(position % mPoints.size()).setSelected(true);
-        prePosition = position % mPoints.size();
-        L.e("onPageSelected->prePosition  :" + prePosition);
+        for (int i = 0; i < mPoints.size(); i++) {
+            mPoints.get(i).setSelected(false);
+        }
+        mPoints.get(position).setSelected(true);
     }
 
-    /**
-     * viewpager的状态
-     *
-     * @param state 0、1、2、
-     *              0 ： 代表什么都没做
-     *              1: 代表正在滑动
-     *              2：代表滑动完毕
-     */
     @Override
     public void onPageScrollStateChanged(int state) {
 
-
     }
 
-
-    private class RotationRunnable implements Runnable {
-
-        private boolean isRunnable = false;
-
-        public void start() {
-
-            if (!isRunnable) {
-                isRunnable = true;
-                //防止出现多线程滚动，取消上一次的滚动线程！
-                mHandler.removeCallbacks(this);
-                mHandler.postDelayed(this, DELAY_MILI);
-            }
-        }
-
-        public void stop() {
-            if (isRunnable) {
-                isRunnable = false;
-                mHandler.removeCallbacks(this);
-            }
-        }
+    private class NomalAdapter extends PagerAdapter {
 
         @Override
-        public void run() {
-            L.e("开始run。。。。。。。。。。。。");
-            if (isRunnable) {
-                mPager.setCurrentItem(mPager.getCurrentItem() + 1);
-                mHandler.postDelayed(this, DELAY_MILI);
-            }
-        }
-    }
-
-    private class AutoAdapter extends PagerAdapter {
-
-        List<ImageView> imgViews = new ArrayList<>();
-
-        @Override
-
         public int getCount() {
-            return Integer.MAX_VALUE;
+            return mBitmaps.size();
         }
 
         @Override
@@ -197,10 +123,8 @@ public class AutoRotationView extends FrameLayout implements ViewPager.OnPageCha
         @Override
         public Object instantiateItem(ViewGroup container, final int position) {
             ImageView iv;
-            int realPosiion = position % mBitmaps.size();
-            L.e("instantiateItem->realPosiion: " + realPosiion);
-            if (imgViews.size() > 0) {
-                iv = imgViews.remove(0);
+            if (mImageViews.size() > 0) {
+                iv = mImageViews.remove(0);
             } else {
                 iv = new ImageView(mContext);
             }
@@ -215,26 +139,17 @@ public class AutoRotationView extends FrameLayout implements ViewPager.OnPageCha
 
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
-                            if (!isOnlyOne) {
-                                mAutoRunable.stop();
-                            }
                             downX = (int) v.getX();
                             downTime = System.currentTimeMillis();
                             break;
                         case MotionEvent.ACTION_UP:
-                            if (!isOnlyOne) {
-                                mAutoRunable.start();
-                            }
                             int moveX = (int) v.getX();
                             long moveTime = System.currentTimeMillis() - downTime;
                             if (downX == moveX && moveTime < 500) {
-                                mHeaderViewClickListener.HeaderViewClick(position % mBitmaps.size());
+                                mHeaderViewClickListener.HeaderViewClick(position);
                             }
                             break;
                         case MotionEvent.ACTION_CANCEL:
-                            if (!isOnlyOne) {
-                                mAutoRunable.start();
-                            }
                             break;
                         default:
                             break;
@@ -244,7 +159,7 @@ public class AutoRotationView extends FrameLayout implements ViewPager.OnPageCha
                     return true;
                 }
             });
-            iv.setImageBitmap(mBitmaps.get(realPosiion));
+            iv.setImageBitmap(mBitmaps.get(position));
             iv.setScaleType(ImageView.ScaleType.FIT_XY);
             container.addView(iv);
             return iv;
@@ -255,24 +170,10 @@ public class AutoRotationView extends FrameLayout implements ViewPager.OnPageCha
             if (object != null && object instanceof ImageView) {
                 ImageView iv = (ImageView) object;
                 container.removeView(iv);
-                imgViews.add(iv);
+                mImageViews.add(iv);
             }
+            //            container.removeView(mImageViews.get(position));
         }
     }
 
-    private HeaderViewClickListener mHeaderViewClickListener;
-
-    public void setHeaderViewClickListener(HeaderViewClickListener headerViewClickListener) {
-        this.mHeaderViewClickListener = headerViewClickListener;
-    }
-
-    public interface HeaderViewClickListener {
-        void HeaderViewClick(int position);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        stopRoll();
-    }
 }
