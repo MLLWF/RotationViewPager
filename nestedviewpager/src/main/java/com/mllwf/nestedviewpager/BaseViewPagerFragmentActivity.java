@@ -183,7 +183,7 @@ public abstract class BaseViewPagerFragmentActivity extends Fragment implements 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         //选中了tab的逻辑
-        mPager.setCurrentItem(tab.getPosition());
+        mPager.setCurrentItem(tab.getPosition(),false);
         if (mCustomTabItemViewList.size() > 0) {
             configSelectedCustormTabItemViewStyle(tab);
         }
